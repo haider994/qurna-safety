@@ -1,0 +1,30 @@
+## Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.venv/
+venv/
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
+data/
+
+## Node
+node_modules/
+frontend/dist/
+# Note: backend/static is included in the repo for single-domain deployment
+.pnpm-debug.log
+.npm/
+*.log
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Editors
+.idea/
+.vscode/
+*.swp

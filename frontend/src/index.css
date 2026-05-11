@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background-color: #0b0f17;
+  color: #e5e7eb;
+  font-family: 'Inter', 'Segoe UI', 'Tahoma', 'Cairo', 'Noto Sans Arabic', sans-serif;
+}
+
+[dir="rtl"] body {
+  font-family: 'Cairo', 'Noto Sans Arabic', 'Segoe UI', 'Tahoma', sans-serif;
+}
+
+/* Smooth scroll & nicer scrollbars */
+* {
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #111827;
+}
+::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+/* Fix recharts for dark theme defaults */
+.recharts-text {
+  fill: #9ca3af;
+}
+.recharts-cartesian-grid line {
+  stroke: #1f2937;
+}
+
+/* Print styles */
+@media print {
+  .no-print { display: none !important; }
+}
+
+/* Subtle pulse for warnings */
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(239,68,68,.5); }
+  70% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+  100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+}
+.pulse-danger {
+  animation: pulseRing 2s infinite;
+}

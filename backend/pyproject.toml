@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "app"
+version = "0.1.0"
+description = "West Qurna Oil Field - Driver Violation Tracking System Backend"
+authors = ["Safety Team <safety@westqurna.local>"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.0"
+uvicorn = {extras = ["standard"], version = "^0.32.0"}
+sqlalchemy = "^2.0.36"
+pydantic = "^2.9.0"
+pydantic-settings = "^2.6.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+bcrypt = "4.0.1"
+python-multipart = "^0.0.17"
+slowapi = "^0.1.9"
+openpyxl = "^3.1.5"
+reportlab = "^4.2.5"
+email-validator = "^2.2.0"
+arabic-reshaper = "^3.0.0"
+python-bidi = "^0.6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
