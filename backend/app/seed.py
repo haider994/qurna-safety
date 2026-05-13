@@ -51,43 +51,42 @@ SAMPLE_VIOLATION_TYPES = [
 
 
 def seed_initial_data(db: Session) -> None:
-    """Create admin user and default violation types."""
-
-    # =========================
-    # Create / Update Admin
-    # =========================
+    """Force recreate admin user + seed violation types."""
 
     admin_username = settings.BOOTSTRAP_ADMIN_USERNAME.lower()
 
-    admin = (
+    # =========================
+    # Delete old admin
+    # =========================
+
+    existing_admin = (
         db.query(User)
         .filter(User.username == admin_username)
         .first()
     )
 
-    if not admin:
-        admin = User(
-            username=admin_username,
-            full_name="System Administrator",
-            role=UserRole.admin,
-            is_active=True,
-            hashed_password=hash_password(
-                settings.BOOTSTRAP_ADMIN_PASSWORD
-            ),
-        )
-
-        db.add(admin)
-
-    else:
-        # تحديث الباسورد إذا الأدمن موجود
-        admin.hashed_password = hash_password(
-            settings.BOOTSTRAP_ADMIN_PASSWORD
-        )
-        admin.is_active = True
-        admin.role = UserRole.admin
+    if existing_admin:
+        db.delete(existing_admin)
+        db.commit()
 
     # =========================
-    # Seed Violation Types
+    # Create fresh admin
+    # =========================
+
+    admin = User(
+        username=admin_username,
+        full_name=settings.BOOTSTRAP_ADMIN_FULL_NAME,
+        role=UserRole.admin,
+        is_active=True,
+        hashed_password=hash_password(
+            settings.BOOTSTRAP_ADMIN_PASSWORD
+        ),
+    )
+
+    db.add(admin)
+
+    # =========================
+    # Seed violation types
     # =========================
 
     existing_codes = {
