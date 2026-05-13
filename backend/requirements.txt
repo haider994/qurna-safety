@@ -7,3 +7,4 @@ bcrypt
 python-multipart
 slowapi
 pydantic-settings
+email-validator
