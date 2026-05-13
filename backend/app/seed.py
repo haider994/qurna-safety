@@ -47,96 +47,54 @@ SAMPLE_VIOLATION_TYPES = [
         "points": 2,
         "instant_ban": False,
     },
-    {
-        "code": "NO_PPE",
-        "name_en": "No PPE (helmet/vest)",
-        "name_ar": "عدم ارتداء معدات الوقاية الشخصية",
-        "description": "Driver not wearing required PPE in the field",
-        "default_severity": Severity.minor,
-        "points": 1,
-        "instant_ban": False,
-    },
-    {
-        "code": "RECKLESS",
-        "name_en": "Reckless driving",
-        "name_ar": "قيادة متهورة",
-        "description": "Aggressive or dangerous driving behavior",
-        "default_severity": Severity.major,
-        "points": 3,
-        "instant_ban": False,
-    },
-    {
-        "code": "RUN_RED",
-        "name_en": "Running red light / stop sign",
-        "name_ar": "تجاوز إشارة المرور الحمراء / علامة التوقف",
-        "description": "Failure to stop at red light or stop sign",
-        "default_severity": Severity.major,
-        "points": 2,
-        "instant_ban": False,
-    },
-    {
-        "code": "WRONG_WAY",
-        "name_en": "Driving wrong way / unauthorized route",
-        "name_ar": "القيادة بالاتجاه المعاكس / مسار غير مصرح",
-        "description": "Driving against traffic direction or off authorized routes",
-        "default_severity": Severity.major,
-        "points": 2,
-        "instant_ban": False,
-    },
-    {
-        "code": "DUI",
-        "name_en": "Driving Under Influence",
-        "name_ar": "القيادة تحت تأثير الكحول/المخدرات",
-        "description": "Driving under the influence of alcohol or drugs",
-        "default_severity": Severity.critical,
-        "points": 10,
-        "instant_ban": True,
-    },
-    {
-        "code": "FATAL_ACCIDENT",
-        "name_en": "Fatal / serious injury accident",
-        "name_ar": "حادث مميت / إصابة خطيرة",
-        "description": "Caused fatal or serious injury accident",
-        "default_severity": Severity.critical,
-        "points": 10,
-        "instant_ban": True,
-    },
-    {
-        "code": "EXPIRED_LICENSE",
-        "name_en": "Expired driving license",
-        "name_ar": "رخصة قيادة منتهية الصلاحية",
-        "description": "Driver operating with expired license",
-        "default_severity": Severity.major,
-        "points": 2,
-        "instant_ban": False,
-    },
-    {
-        "code": "VEHICLE_DEFECT",
-        "name_en": "Vehicle safety defect ignored",
-        "name_ar": "تجاهل عيب سلامة في المركبة",
-        "description": "Operating vehicle with known safety defect",
-        "default_severity": Severity.major,
-        "points": 2,
-        "instant_ban": False,
-    },
 ]
 
 
 def seed_initial_data(db: Session) -> None:
-    """Idempotent seed: creates admin if no users exist and inserts missing violation types."""
-    # Admin bootstrap
-    if db.query(User).count() == 0:
+    """Create admin user and default violation types."""
+
+    # =========================
+    # Create / Update Admin
+    # =========================
+
+    admin_username = settings.BOOTSTRAP_ADMIN_USERNAME.lower()
+
+    admin = (
+        db.query(User)
+        .filter(User.username == admin_username)
+        .first()
+    )
+
+    if not admin:
         admin = User(
-            username=settings.BOOTSTRAP_ADMIN_USERNAME.lower(),
-            full_name=settings.BOOTSTRAP_ADMIN_FULL_NAME,
+            username=admin_username,
+            full_name="System Administrator",
             role=UserRole.admin,
             is_active=True,
-            hashed_password=hash_password(settings.BOOTSTRAP_ADMIN_PASSWORD),
+            hashed_password=hash_password(
+                settings.BOOTSTRAP_ADMIN_PASSWORD
+            ),
         )
+
         db.add(admin)
 
-    # Violation types
-    existing_codes = {row[0] for row in db.query(ViolationType.code).all()}
+    else:
+        # تحديث الباسورد إذا الأدمن موجود
+        admin.hashed_password = hash_password(
+            settings.BOOTSTRAP_ADMIN_PASSWORD
+        )
+        admin.is_active = True
+        admin.role = UserRole.admin
+
+    # =========================
+    # Seed Violation Types
+    # =========================
+
+    existing_codes = {
+        row[0]
+        for row in db.query(ViolationType.code).all()
+    }
+
     for vt in SAMPLE_VIOLATION_TYPES:
         if vt["code"] not in existing_codes:
             db.add(ViolationType(**vt))
